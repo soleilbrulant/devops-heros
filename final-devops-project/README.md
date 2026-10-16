@@ -58,32 +58,32 @@ final-devops-project/
 
 ## Architecture diagram
 ```mermaid
-graph TD;
-    Dev[Developer Workstation]-->|Git Commit & Push|GitHub[GitHub Repository];
-    GitHub-->|Webhook Trigger|GHA[GitHub Actions CI/CD];
-    subgraph CI_Pipeline [Continuous Integration & DevSecOps]
-        GHA-->|1. Run Tests|Pytest[Pytest Test Suite];
-        GHA-->|2. Build Frontend|Vite[Vite Production Build];
-        GHA-->|3. Containerize|Docker[Docker Multi-Stage Build];
-        GHA-->|4. Vulnerability Scan|Trivy[Trivy Security Gate];
-        Trivy-->|Pass: Push Image|GHCR[GitHub Container Registry];
+graph TD
+    Dev["Developer Workstation"] -->|"Git Commit & Push"| GitHub["GitHub Repository"]
+    GitHub -->|"Webhook Trigger"| GHA["GitHub Actions CI/CD"]
+    subgraph CI_Pipeline ["Continuous Integration & DevSecOps"]
+        GHA -->|"1. Run Tests"| Pytest["Pytest Test Suite"]
+        GHA -->|"2. Build Frontend"| Vite["Vite Production Build"]
+        GHA -->|"3. Containerize"| Docker["Docker Multi-Stage Build"]
+        GHA -->|"4. Vulnerability Scan"| Trivy["Trivy Security Gate"]
+        Trivy -->|"Pass: Push Image"| GHCR["GitHub Container Registry"]
     end
-    subgraph Cloud_Infra [AWS Cloud Infrastructure - Terraform]
-        TF[Terraform]-->|Provision|VPC[AWS VPC & Subnets];
-        TF-->|Provision|EKS[Amazon EKS Cluster];
+    subgraph Cloud_Infra ["AWS Cloud Infrastructure - Terraform"]
+        TF["Terraform"] -->|"Provision"| VPC["AWS VPC & Subnets"]
+        TF -->|"Provision"| EKS["Amazon EKS Cluster"]
     end
-    subgraph K8s_Cluster [Kubernetes Cluster]
-        GHCR-.->|Pull Images|Deployments[Pods & Deployments];
-        ArgoCD[ArgoCD GitOps]-->|Reconcile State|Deployments;
-        Ingress[NGINX Ingress Controller]-->|Route /api|Backend[FastAPI Backend];
-        Ingress-->|Route /|Frontend[React Frontend];
-        Backend-->|SQLAlchemy|Postgres[(PostgreSQL Database)];
-        HPA[Horizontal Pod Autoscaler]-->|Auto-scale|Backend;
+    subgraph K8s_Cluster ["Kubernetes Cluster"]
+        GHCR -.->|"Pull Images"| Deployments["Pods & Deployments"]
+        ArgoCD["ArgoCD GitOps"] -->|"Reconcile State"| Deployments
+        Ingress["NGINX Ingress Controller"] -->|"Route /api"| Backend["FastAPI Backend"]
+        Ingress -->|"Route /"| Frontend["React Frontend"]
+        Backend -->|"SQLAlchemy"| Postgres[("PostgreSQL Database")]
+        HPA["Horizontal Pod Autoscaler"] -->|"Auto-scale"| Backend
     end
-    subgraph Observability_Stack [Monitoring & Telemetry]
-        Backend-->|Expose|Metrics[/metrics Endpoint];
-        Prometheus[Prometheus Operator]-->|Scrape|Metrics;
-        Prometheus-->|Visualize|Grafana[Grafana Dashboards];
+    subgraph Observability_Stack ["Monitoring & Telemetry"]
+        Backend -->|"Expose"| Metrics["/metrics Endpoint"]
+        Prometheus["Prometheus Operator"] -->|"Scrape"| Metrics
+        Prometheus -->|"Visualize"| Grafana["Grafana Dashboards"]
     end
 ```
 
