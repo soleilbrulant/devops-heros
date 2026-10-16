@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskboard-fixed-image
+  namespace: taskboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fixed-backend
+  template:
+    metadata:
+      labels:
+        app: fixed-backend
+    spec:
+      containers:
+        - name: backend
+          image: taskboard-backend:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000

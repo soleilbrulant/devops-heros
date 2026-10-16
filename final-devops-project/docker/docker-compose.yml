@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: capstone-postgres
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_secure_password
+      POSTGRES_DB: capstone_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devops_user -d capstone_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../application/backend
+      dockerfile: ../../docker/Dockerfile.backend
+    container_name: capstone-backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://devops_user:devops_secure_password@postgres:5432/capstone_db
+      APP_NAME: "Capstone DevOps API"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../application/frontend
+      dockerfile: ../../docker/Dockerfile.frontend
+    container_name: capstone-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
