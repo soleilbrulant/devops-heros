@@ -59,9 +59,9 @@ final-devops-project/
 ## Architecture diagram
 ```mermaid
 graph TD
-    Dev["Developer Workstation"] -->|"Git Commit & Push"| GitHub["GitHub Repository"]
+    Dev["Developer Workstation"] -->|"Git Commit and Push"| GitHub["GitHub Repository"]
     GitHub -->|"Webhook Trigger"| GHA["GitHub Actions CI/CD"]
-    subgraph CI_Pipeline ["Continuous Integration & DevSecOps"]
+    subgraph CI_Pipeline ["Continuous Integration and DevSecOps"]
         GHA -->|"1. Run Tests"| Pytest["Pytest Test Suite"]
         GHA -->|"2. Build Frontend"| Vite["Vite Production Build"]
         GHA -->|"3. Containerize"| Docker["Docker Multi-Stage Build"]
@@ -69,18 +69,18 @@ graph TD
         Trivy -->|"Pass: Push Image"| GHCR["GitHub Container Registry"]
     end
     subgraph Cloud_Infra ["AWS Cloud Infrastructure - Terraform"]
-        TF["Terraform"] -->|"Provision"| VPC["AWS VPC & Subnets"]
+        TF["Terraform"] -->|"Provision"| VPC["AWS VPC and Subnets"]
         TF -->|"Provision"| EKS["Amazon EKS Cluster"]
     end
     subgraph K8s_Cluster ["Kubernetes Cluster"]
-        GHCR -.->|"Pull Images"| Deployments["Pods & Deployments"]
+        GHCR -.->|"Pull Images"| Deployments["Pods and Deployments"]
         ArgoCD["ArgoCD GitOps"] -->|"Reconcile State"| Deployments
         Ingress["NGINX Ingress Controller"] -->|"Route /api"| Backend["FastAPI Backend"]
         Ingress -->|"Route /"| Frontend["React Frontend"]
-        Backend -->|"SQLAlchemy"| Postgres[("PostgreSQL Database")]
+        Backend -->|"SQLAlchemy"| Postgres["PostgreSQL Database"]
         HPA["Horizontal Pod Autoscaler"] -->|"Auto-scale"| Backend
     end
-    subgraph Observability_Stack ["Monitoring & Telemetry"]
+    subgraph Observability_Stack ["Monitoring and Telemetry"]
         Backend -->|"Expose"| Metrics["/metrics Endpoint"]
         Prometheus["Prometheus Operator"] -->|"Scrape"| Metrics
         Prometheus -->|"Visualize"| Grafana["Grafana Dashboards"]
